@@ -174,3 +174,34 @@ def project_detail(request, project_id):
             "comments": user_comment,
         },
     )
+
+
+@login_required
+def logout(request):
+    django_logout(request)
+    return HttpResponseRedirect('/')
+
+
+class ProjectList(APIView):
+    def get(self, request, format=None):
+        all_projects = Projects.objects.all()
+        serializers = ProjectSerializer(all_projects, many=True)
+
+        return Response(serializers.data)
+
+
+@login_required(login_url='/accounts/login/')
+def apiView(request):
+    current_user = request.user
+    title = "Api"
+    profiles = Profile.objects.filter(user=current_user)[0:1]
+
+    return render(request, 'api.html', {"title": title, 'profile': profiles})
+
+
+class ProfileList(APIView):
+    def get(self, request, format=None):
+        all_profiles = Profile.objects.all()
+        serializers = ProfileSerializer(all_profiles, many=True)
+
+        return Response(serializers.data)
