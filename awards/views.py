@@ -20,3 +20,29 @@ def home_page(request):
     return render(
         request, "index.html", {"projects": projects}
     )  # mradi is the same as project
+
+
+@login_required(login_url='/accounts/login/')
+def user_profile(request):
+    current_user = request.user
+    try:
+        wasifu = Profile.objects.filter(user=current_user)[
+            0:1
+        ]  # wasifu is the same as profile
+        user_projects = Projects.objects.filter(user=current_user)
+    except Exception as e:
+        raise Http404()
+    if request.method == "POST":
+        form = UpdateForm(request.POST, request.FILES)
+        if form.is_valid():
+            profile = form.save(commit=False)
+            profile.user = request.user
+            profile.save()
+        return redirect("user_profile")
+    else:
+        form = UpdateForm()
+    return render(
+        request,
+        "user_profile.html",
+        {"form": form, "profile": wasifu, "projects": user_projects},
+    )
