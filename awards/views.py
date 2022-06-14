@@ -61,3 +61,14 @@ def post(request):
     else:
         form = PostForm()
     return render(request, "post.html", {"form": form})
+
+
+def search(request):
+    if "name" in request.GET and request.GET["name"]:
+        term = request.GET.get("name")
+        results = Projects.search_project(term)
+
+        return render(request, "search.html", {"projects": results})
+    else:
+        message = "You havent searched any project"
+        return render(request, "search.html", {"message": message})
