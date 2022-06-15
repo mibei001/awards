@@ -26,6 +26,18 @@ class Projects(models.Model):
     def __str__(self) -> str:
         return self.name
 
+    def __str__(self) -> str:
+        return self.user
+
+    def __str__(self) -> str:
+        return self.date
+
+    def __str__(self) -> str:
+        return self.description
+
+    def __str__(self) -> str:
+        return self.link      
+
     @classmethod
     def search_project(cls, word):
         searched = cls.objects.filter(name__icontains=word)
@@ -40,6 +52,12 @@ class Profile(models.Model):
     class Meta:
         ordering = ['-image']
 
+    def __str__(self) -> str:
+        return self.user
+
+    def __str__(self) -> str:
+        return self.bio           
+
 
 class Votes(models.Model):
     design = models.PositiveIntegerField(
@@ -50,9 +68,24 @@ class Votes(models.Model):
         default=0, validators=[MaxValueValidator(10)])
     user = models.ForeignKey(User, on_delete=CASCADE)
     project = models.IntegerField(default=0)
+    
+    def __str__(self) -> str:
+        return self.user
 
+    def __str__(self) -> str:
+        return self.project    
 
 class Comments(models.Model):
     user = models.ForeignKey(User, on_delete=CASCADE)
     comment = models.TextField(max_length=200)
     pro_id = models.IntegerField(default=0)
+
+
+    def __str__(self) -> str:
+        return self.user
+        
+    def __str__(self) -> str:
+        return self.comment
+
+    def __str__(self) -> str:
+        return self.pro_id        

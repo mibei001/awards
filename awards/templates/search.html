@@ -18,15 +18,7 @@
 <div class="container-fluid mt-5">
   <div class="px-lg-5">
     <div class="row">
-      <div class="col-md-6">
-        {%if projects%}
-        <h3>Found {{projects|length}}</h3>
-        {%else%}
-        <h3>Found {{projects|length}} Related results</h3>
-        <br />
-        <p class="alert alert-info">No result found</p>
-        {%endif%}
-      </div>
+      
       <!-- Gallery item -->
       {%for project in projects%}
       <div class="col-xl-3 col-lg-4 col-md-6 mb-4">

@@ -10,8 +10,6 @@ from rest_framework.views import APIView
 from .serializers import ProfileSerializer,  ProjectSerializer
 
 # Create your views here.
-
-
 def home_page(request):
     try:
         projects = Projects.objects.all()
@@ -21,8 +19,7 @@ def home_page(request):
         request, "index.html", {"projects": projects}
     )  # mradi is the same as project
 
-
-@login_required(login_url='/accounts/login/')
+@login_required(login_url = '/accounts/login/')
 def user_profile(request):
     current_user = request.user
     try:
@@ -47,8 +44,7 @@ def user_profile(request):
         {"form": form, "profile": wasifu, "projects": user_projects},
     )
 
-
-@login_required(login_url='/accounts/login/')
+@login_required(login_url = '/accounts/login/')
 def post(request):
     current_user = request.user
     if request.method == "POST":
@@ -64,11 +60,12 @@ def post(request):
 
 
 def search(request):
-    if "name" in request.GET and request.GET["name"]:
-        term = request.GET.get("name")
-        results = Projects.search_project(term)
+    if request.method == "POST":
+        searched = request.POST['searched']
+        projects = Projects.objects.filter(
+            name=searched)
 
-        return render(request, "search.html", {"projects": results})
+        return render(request, "search.html", {"projects": projects})
     else:
         message = "You havent searched any project"
         return render(request, "search.html", {"message": message})
@@ -175,32 +172,28 @@ def project_detail(request, project_id):
         },
     )
 
-
 @login_required
 def logout(request):
     django_logout(request)
-    return HttpResponseRedirect('/')
-
+    return  HttpResponseRedirect('/')
 
 class ProjectList(APIView):
-    def get(self, request, format=None):
+    def get(self,request,format=None):
         all_projects = Projects.objects.all()
-        serializers = ProjectSerializer(all_projects, many=True)
+        serializers = ProjectSerializer(all_projects,many=True)
 
         return Response(serializers.data)
-
 
 @login_required(login_url='/accounts/login/')
 def apiView(request):
     current_user = request.user
     title = "Api"
-    profiles = Profile.objects.filter(user=current_user)[0:1]
+    profiles = Profile.objects.filter(user = current_user)[0:1]
 
-    return render(request, 'api.html', {"title": title, 'profile': profiles})
-
+    return render(request,'api.html',{"title":title, 'profile':profiles})
 
 class ProfileList(APIView):
-    def get(self, request, format=None):
+    def get(self,request,format=None):
         all_profiles = Profile.objects.all()
         serializers = ProfileSerializer(all_profiles, many=True)
 
